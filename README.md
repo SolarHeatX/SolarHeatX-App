@@ -1,75 +1,50 @@
-# Control ESP32 from anywhere in the World - ESP32 Control Panel - ReactJS Web App
+# SolarController-App 🌞
 
 [![Build and Deploy to AWS S3](https://github.com/SolarHeatX/SolarHeatX-App/actions/workflows/workflow.yml/badge.svg)](https://github.com/SolarHeatX/SolarHeatX-App/actions/workflows/workflow.yml)
 
-This repository has been created as a part of the YouTube video:
-[Control ESP32 from ANYWHERE in the World - Step-By-Step Tutorial](https://youtu.be/z53MkVFOnIo)
+Das ist die React-App für deinen SolarController. Du kannst die Temperaturen von verschiedenen Komponenten wie Warmwasser, Solar und Pufferspeicher überprüfen und auch die Ladepumpen im Automatikmodus betreiben.
 
-This is ReactJS Application to control ESP32 from the browser through AWS API Gateway WebSockets Server.
+## Hauptmerkmale 🌟
 
-## Installation
+- Temperaturüberwachung für Warmwasser, Solar und Pufferspeicher
+- Betrieb von Ladepumpen im Automatikmodus
+- Übersichtliches und benutzerfreundliches Design
 
-Run:
+## Technologien 💻
 
-```bash
-npm install
+Die App ist mit modernen Technologien wie React und TypeScript gebaut und nutzt WebSockets, um Echtzeitdaten zu senden und zu empfangen.
+Starten der App 🚀
+
+Erstmal musst du Node.js und Yarn auf deinem Computer installiert haben. Dann kannst du die folgenden Befehle in deiner Konsole ausführen:
+
+bash
+
 ```
+# Klone das Repo
+git clone https://github.com/SolarHeatX/SolarHeatX-App.git
 
-or
+# Wechsle in das Repo-Verzeichnis
+cd solarcontroller-app
 
-```
+# Installiere Abhängigkeiten
 yarn install
+
+# Starte die App
+yarn start
 ```
 
-## Usage
+Dein Webbrowser sollte sich öffnen und die App anzeigen.
 
-Run:
+## Inspiration 💡
 
-```
-npm run dev
-```
+Dieses Projekt wurde stark inspiriert und unterstützt durch das Projekt [ESP32 Control Panel](https://github.com/ttarnowski/esp32-control-panel).
 
-or:
+## Beitrag 🤝
 
-```
-yarn dev
-```
+Jeder Beitrag zu diesem Projekt ist willkommen! Du kannst einen Fehler melden, ein Feature vorschlagen oder direkt einen Pull Request einreichen.
 
-## Creating Infrastructure
+## Lizenz ⚖️
 
-Run:
+Dieses Projekt steht unter der MIT-Lizenz. Weitere Einzelheiten findest du in der LICENSE-Datei.
 
-```
-npm run create-infrastructure
-```
-
-or:
-
-```
-yarn create-infrastructure
-```
-
-If get following error message:
-
-```
-An error occurred (BucketAlreadyExists) when calling the CreateBucket operation: The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again.
-```
-
-It means the bucket name you're trying to use is already taken.
-To use different bucket name run:
-
-```
-git reset --hard
-```
-
-And:
-
-```
-npm run create-infrastructure
-```
-
-again but provide different bucket name when prompted.
-
-## Licence
-
-MIT.
+Für weitere Informationen oder wenn du Probleme hast, kannst du dich gerne an mich wenden. Viel Spaß beim Nutzen der SolarController-App! ☀️🎉
