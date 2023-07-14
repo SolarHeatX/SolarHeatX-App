@@ -7,11 +7,24 @@ import TempBlock from "./components/TempBlock";
 type MessageBody = {
   action: string;
   type: string;
-  body: unknown;
+  body?: {
+    pin?: number;
+    value?: number;
+    state?: number;
+  };
+  sensor1?: number;
+  sensor2?: number;
+  sensor3?: number;
 };
 
-const outputPins = [18, 19, 22, 23, 2];
+const outputPins = [16, 17, 18, 19, 22, 23, 2];
 const defultOutputPin = outputPins[0];
+
+const appliancePins = {
+  Automatik: 16,
+  Ladepumpe: 17,
+  Speicherladepumpe: 18,
+};
 
 function App() {
   const { lastMessage, sendMessage, readyState } = useWebSocket(
@@ -20,8 +33,13 @@ function App() {
 
   const [selectedPin, setSelectedPin] = useState(defultOutputPin);
   const [pinValue, setPinValue] = useState(false);
+  const [pinValues, setPinValues] = useState<{ [key: number]: boolean }>({});
   const [date, setDate] = useState("");
   const [weekday, setWeekday] = useState("");
+
+  const [sensor1Temp, setSensor1Temp] = useState(0);
+  const [sensor2Temp, setSensor2Temp] = useState(0);
+  const [sensor3Temp, setSensor3Temp] = useState(0);
 
   useEffect(() => {
     const today = new Date();
@@ -47,11 +65,36 @@ function App() {
     }
 
     if (parsedMessage.type === "output") {
-      const body = parsedMessage.body as number;
-
-      setPinValue(body === 0 ? false : true);
+      const pin = parsedMessage.body?.pin;
+      const value = parsedMessage.body?.value;
+      if (typeof pin === "number" && typeof value === "number") {
+        setPinValues((prevValues) => ({
+          ...prevValues,
+          [pin]: value === 0 ? false : true,
+        }));
+      }
     }
-  }, [lastMessage, setPinValue]);
+
+    if (parsedMessage.type === "pinState") {
+      const pin = parsedMessage.body?.pin;
+      const state = parsedMessage.body?.state;
+      if (typeof pin === "number" && typeof state === "number") {
+        setPinValues((prevValues) => ({
+          ...prevValues,
+          [pin]: state === 0 ? false : true,
+        }));
+        console.log(pin, state);
+      }
+    }
+
+    // Handle temperature updates
+    if (parsedMessage.type === "temperature") {
+      // Use || 0 to provide a default value of 0 if sensor data is undefined
+      setSensor1Temp(parsedMessage.sensor1 || -127);
+      setSensor2Temp(parsedMessage.sensor2 || -127);
+      setSensor3Temp(parsedMessage.sensor3 || -127);
+    }
+  }, [lastMessage]);
 
   useEffect(() => {
     sendMessage(
@@ -80,6 +123,28 @@ function App() {
     });
   }, []);
 
+  useEffect(() => {
+    Object.values(appliancePins).forEach((pin) => {
+      sendMessage(
+        JSON.stringify({
+          action: "msg",
+          type: "cmd",
+          body: {
+            type: "pinMode",
+            pin,
+            mode: "output",
+          },
+        })
+      );
+
+      // Initialize pinValue state
+      setPinValues((prevState) => ({
+        ...prevState,
+        [pin]: false,
+      }));
+    });
+  }, []);
+
   return (
     <div className="App text-black flex flex-col w-full h-full">
       <header className=" bg-white overflow-hidden rounded-t-lg rounded-b-3xl py-5 sm:py-10 px-5 sm:px-10 pb-5 shadow-md mb-10">
@@ -91,10 +156,18 @@ function App() {
         </div>
 
         <div className="flex flex-col xxs:flex-row items-center justify-evenly mt-10 w-full relative overflow-hidden">
-          <TempBlock temperature="%B-T%" name="Warmwasser" id="boiler-temp" />
-          <TempBlock temperature="%S-T%" name="Solar" id="solar-temp" />
           <TempBlock
-            temperature="%P-T%"
+            temperature={sensor1Temp.toString()}
+            name="Warmwasser"
+            id="boiler-temp"
+          />
+          <TempBlock
+            temperature={sensor2Temp.toString()}
+            name="Solar"
+            id="solar-temp"
+          />
+          <TempBlock
+            temperature={sensor3Temp.toString()}
             name="Pufferspeicher"
             id="puffer-temp"
           />
@@ -121,6 +194,15 @@ function App() {
           status="opened"
           imgWidth={35}
           imgHeight={35}
+          pin={appliancePins["Automatik"]}
+          pinValue={pinValues[appliancePins["Automatik"]]}
+          setPinValue={(value: boolean) =>
+            setPinValues({
+              ...pinValues,
+              [appliancePins["Automatik"]]: value,
+            })
+          }
+          sendMessage={sendMessage}
         />
         <Appliance
           svgName="pumpeSVG"
@@ -128,6 +210,15 @@ function App() {
           status="opened"
           imgWidth={50}
           imgHeight={50}
+          pin={appliancePins["Automatik"]}
+          pinValue={pinValues[appliancePins["Automatik"]]}
+          setPinValue={(value: boolean) =>
+            setPinValues({
+              ...pinValues,
+              [appliancePins["Automatik"]]: value,
+            })
+          }
+          sendMessage={sendMessage}
         />
         <Appliance
           svgName="pumpeSVG"
@@ -135,6 +226,15 @@ function App() {
           status="opened"
           imgWidth={50}
           imgHeight={50}
+          pin={appliancePins["Automatik"]}
+          pinValue={pinValues[appliancePins["Automatik"]]}
+          setPinValue={(value: boolean) =>
+            setPinValues({
+              ...pinValues,
+              [appliancePins["Automatik"]]: value,
+            })
+          }
+          sendMessage={sendMessage}
         />
       </div>
 

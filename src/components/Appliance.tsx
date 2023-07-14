@@ -1,3 +1,4 @@
+// In Ihrer Appliance.tsx
 import React from "react";
 import SvgIcon from "./SvgIcon";
 
@@ -8,6 +9,10 @@ interface ApplianceProps {
   additionalText?: string;
   imgWidth?: number;
   imgHeight?: number;
+  pin: number;
+  pinValue: boolean;
+  setPinValue: (value: boolean) => void;
+  sendMessage: (message: string) => void;
 }
 
 const Appliance: React.FC<ApplianceProps> = ({
@@ -17,11 +22,42 @@ const Appliance: React.FC<ApplianceProps> = ({
   additionalText,
   imgWidth = 35,
   imgHeight = 35,
+  pin,
+  pinValue,
+  setPinValue,
+  sendMessage,
 }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.checked;
+    setPinValue(newValue);
+    sendMessage(
+      JSON.stringify({
+        action: "msg",
+        type: "cmd",
+        body: {
+          type: "digitalWrite",
+          pin: pin,
+          value: newValue ? 1 : 0,
+        },
+      })
+    );
+  };
+
   return (
     <div className="appliance" id={`${title}Container`}>
-      <input type="checkbox" name="pumpen" id={`${title}`} />
+      <input
+        type="checkbox"
+        name="pumpen"
+        id={`${title}`}
+        style={{ display: "none" }} // hides the controlled checkbox
+        checked={pinValue}
+        onChange={handleChange}
+      />
       <label htmlFor={`${title}`}>
+        <input
+          type="checkbox"
+          style={{ display: "none" }} // hides the dummy checkbox
+        />
         <SvgIcon
           name={svgName}
           width={imgWidth}
