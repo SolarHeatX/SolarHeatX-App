@@ -1,6 +1,6 @@
 # Control ESP32 from anywhere in the World - ESP32 Control Panel - ReactJS Web App
 
-![Build and Deploy to AWS S3](hhttps://github.com/SolarHeatX/SolarHeatX-App/.github/workflows/workflow.yml/badge.svg)
+[![Build and Deploy to AWS S3](https://github.com/SolarHeatX/SolarHeatX-App/actions/workflows/workflow.yml/badge.svg)](https://github.com/SolarHeatX/SolarHeatX-App/actions/workflows/workflow.yml)
 
 This repository has been created as a part of the YouTube video:
 [Control ESP32 from ANYWHERE in the World - Step-By-Step Tutorial](https://youtu.be/z53MkVFOnIo)
